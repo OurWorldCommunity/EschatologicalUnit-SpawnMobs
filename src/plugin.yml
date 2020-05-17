@@ -3,6 +3,6 @@ main: online.smyhw.EschatologicalUnit.SpawnMobs.smyhw
 version: 1.0.0
 author: smyhw
 commands:
-  euS:
+  euSm:
     description: euSm
     usage: /<command>

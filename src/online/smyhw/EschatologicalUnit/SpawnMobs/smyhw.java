@@ -94,12 +94,20 @@ public class smyhw extends JavaPlugin implements Listener
                 {
                 	if(args.length<2) {CSBZ(sender);return true;}
                 	int Wave =Integer.parseInt( args[1]);
-                    Iterator<Location> it = EnablePoint.iterator();
-                    while (it.hasNext()) 
+                	List<String> MobTypeTexts = configer.getStringList("Wave."+Wave);
+                	HashMap<String,Integer> MobTypes = new HashMap<String,Integer>();
+                	Iterator<String> temp3 = MobTypeTexts.iterator();
+                    while (temp3.hasNext()) 
                     {
-                    	Location temp = it.next();
-                    	sender.sendMessage(temp.toString());
+                    	String temp1 = temp3.next();
+                    	String[] temp2 = temp1.split("*");
+                    	MobTypes.put(temp2[0],Integer.parseInt(temp2[1]));
+                    	for(int i=0;i<Integer.parseInt(temp2[1]);i++)
+                    	{
+                    		
+                    	}
                     }
+                    
                 	return true;
                 }
                 case "ACT":
@@ -130,6 +138,12 @@ public class smyhw extends JavaPlugin implements Listener
 	{
 		sender.sendMessage(prefix+"非法使用 | 使用者信息已记录，此事将被上报");
 		loger.warning(prefix+"使用者<"+sender.getName()+">试图非法使用指令{参数不足}");
+	}
+	
+	void SpanMob(int x,int y,int z,String type)
+	{
+		String cmd = configer.getString("MOBs."+type);
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),cmd);
 	}
 	
 }

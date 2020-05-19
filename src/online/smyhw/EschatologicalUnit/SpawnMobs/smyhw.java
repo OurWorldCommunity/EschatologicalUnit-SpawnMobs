@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -95,18 +96,19 @@ public class smyhw extends JavaPlugin implements Listener
                 	if(args.length<2) {CSBZ(sender);return true;}
                 	int Wave =Integer.parseInt( args[1]);
                 	List<String> MobTypeTexts = configer.getStringList("Wave."+Wave);
-                	HashMap<String,Integer> MobTypes = new HashMap<String,Integer>();
-                	Iterator<String> temp3 = MobTypeTexts.iterator();
-                    while (temp3.hasNext()) 
-                    {
-                    	String temp1 = temp3.next();
-                    	String[] temp2 = temp1.split("*");
-                    	MobTypes.put(temp2[0],Integer.parseInt(temp2[1]));
-                    	for(int i=0;i<Integer.parseInt(temp2[1]);i++)
-                    	{
-                    		
-                    	}
-                    }
+                	Iterator<String> temp1 = MobTypeTexts.iterator();
+                	while(temp1.hasNext())
+                	{
+                		String temp2 = temp1.next();
+                		sender.sendMessage(temp2);
+                		String[] temp3 = temp2.split("\\*");
+                		String MobName = temp3[0];
+                		int  MobNum = Integer.parseInt( temp3[1] );
+                		for(int i=0;i<MobNum;i++)
+                		{
+                			SpanMob(MobName);
+                		}
+                	}
                     
                 	return true;
                 }
@@ -140,9 +142,17 @@ public class smyhw extends JavaPlugin implements Listener
 		loger.warning(prefix+"使用者<"+sender.getName()+">试图非法使用指令{参数不足}");
 	}
 	
-	void SpanMob(int x,int y,int z,String type)
+	void SpanMob(String type)
 	{
 		String cmd = configer.getString("MOBs."+type);
+		Random temp1 = new Random();
+		int temp2 = temp1.nextInt(EnablePoint.size());
+		int x = (int) EnablePoint.get(temp2).getX();
+		int y = (int) EnablePoint.get(temp2).getY();
+		int z = (int) EnablePoint.get(temp2).getZ();
+		cmd = cmd.replaceAll("%x%", x+"");
+		cmd = cmd.replaceAll("%y%", y+"");
+		cmd = cmd.replaceAll("%z%", z+"");
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),cmd);
 	}
 	

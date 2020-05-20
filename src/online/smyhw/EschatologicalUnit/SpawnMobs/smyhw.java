@@ -102,6 +102,8 @@ public class smyhw extends JavaPlugin implements Listener
                 		String temp2 = temp1.next();
                 		sender.sendMessage(temp2);
                 		String[] temp3 = temp2.split("\\*");
+                		if(temp3.length!=2) 
+                		{sender.sendMessage(smyhw.prefix+"语句<"+temp2+">没有检测到分隔符<*>");return true;}
                 		String MobName = temp3[0];
                 		int  MobNum = Integer.parseInt( temp3[1] );
                 		for(int i=0;i<MobNum;i++)
@@ -117,6 +119,8 @@ public class smyhw extends JavaPlugin implements Listener
                 	if(args.length<2) {CSBZ(sender);return true;}
                 	String GroupName  = args[1];
                 	List Points = configer.getList("SpawnGroup."+GroupName);
+                	if(Points==null)
+                	{sender.sendMessage(smyhw.prefix+"对应的刷怪组不存在！");return true;}
                     Iterator<String> it = Points.iterator();
                     while (it.hasNext()) 
                     {
@@ -127,6 +131,7 @@ public class smyhw extends JavaPlugin implements Listener
                         Location zb = new Location(Bukkit.getWorld("world"),x,y,z);
                         EnablePoint.add(zb);
                     }
+                    sender.sendMessage(smyhw.prefix+"刷怪组<"+args[1]+">已激活");
                 	return true;
                 }
                 

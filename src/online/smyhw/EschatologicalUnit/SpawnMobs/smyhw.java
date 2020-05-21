@@ -29,7 +29,7 @@ public class smyhw extends JavaPlugin implements Listener
 	public static Logger loger;
 	public static FileConfiguration configer;
 	public static String prefix;
-	static List<Location> EnablePoint = new ArrayList<Location>();
+	static List<Location> EnablePoint;
 	@Override
     public void onEnable() 
 	{
@@ -39,6 +39,7 @@ public class smyhw extends JavaPlugin implements Listener
 		configer = getConfig();
 		smyhw_=this;
 		getLogger().info("正在加载配置...");
+		EnablePoint = new ArrayList<Location>();
 		saveDefaultConfig();
 		prefix = configer.getString("config.prefix");
 		getLogger().info("正在注册监听器...");

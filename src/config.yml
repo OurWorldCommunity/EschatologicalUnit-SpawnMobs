@@ -27,15 +27,15 @@ MOBs:
 SpawnPoint:
   Ground1:  #刷怪点名称
     x: 0
-    y: 0
+    y: 100
     z: 0
   Ground2:
     x: 10
-    y: 10
+    y: 100
     z: 10
     
 SpawnGroup:
   Group1:   #刷怪组名称
   - Ground1   #刷怪点名称
   Group2:
-  - Ground1
+  - Ground2

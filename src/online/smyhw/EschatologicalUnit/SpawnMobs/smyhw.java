@@ -119,20 +119,23 @@ public class smyhw extends JavaPlugin implements Listener
                 			{
                 			case "sc":
                 			{
-                    			Continued temp4 = new Continued(MobNum,MobName);
-                    			if(ContinuedMap.containsKey(args[2]+"_"+MobName))
+                    			if(ContinuedMap.containsKey(args[1]+"_"+MobName))
                     			{
                     				loger.warning("怪物种类<"+MobName+">在持续性刷怪中重复，持续性刷怪时相同种类怪物条目不能重复(您不能同时开启两个相同波数的持续性刷怪)");
                     				return true;
                     			}
-                    			ContinuedMap.put(args[2]+"_"+MobName,temp4);
-                    			return true;
+                    			Continued temp4 = new Continued(MobNum,MobName);
+                    			ContinuedMap.put(args[1]+"_"+MobName,temp4);
+                    			sender.sendMessage(args[1]+"_"+MobName);
+                    			continue;
                 			}
                 			case "ec":
                 			{
-                				ContinuedMap.get(args[2]+"_"+MobName).cancel();
-                				ContinuedMap.remove(args[2]+"_"+MobName);
-                				return true;
+                				sender.sendMessage(args[1]+"_"+MobName);
+                				Continued  temp4 =  ContinuedMap.get(args[1]+"_"+MobName);
+                				temp4.cancel();
+//                				ContinuedMap.remove(args[2]+"_"+MobName);
+                				continue;
                 			}
                 			default:
                 				CSBZ(sender);

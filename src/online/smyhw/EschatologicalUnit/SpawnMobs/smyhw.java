@@ -9,10 +9,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,8 @@ public class smyhw extends JavaPlugin implements Listener
 	public static Logger loger;
 	public static FileConfiguration configer;
 	public static String prefix;
-	static List<Location> EnablePoint;
+	public static List<Location> EnablePoint;
+	public static Hashtable ContinuedMap = new Hashtable();
 	@Override
     public void onEnable() 
 	{
@@ -107,10 +110,40 @@ public class smyhw extends JavaPlugin implements Listener
                 		{sender.sendMessage(smyhw.prefix+"语句<"+temp2+">没有检测到分隔符<*>");return true;}
                 		String MobName = temp3[0];
                 		int  MobNum = Integer.parseInt( temp3[1] );
-                		for(int i=0;i<MobNum;i++)
+                		if(args.length >2 && args[3].equals("sc"))
                 		{
-                			SpanMob(MobName);
+                			switch(args[3])
+                			{
+                			case "sc":
+                			{
+                    			Continued temp4 = new Continued(MobNum,MobName);
+                    			if(ContinuedMap.containsKey(temp4))
+                    			{
+                    				loger.warning("怪物种类<"+MobName+">在持续性刷怪中重复，持续性刷怪时相同种类怪物条目不能重复，同时不推荐同时启用多个持续性刷怪");
+                    				return true;
+                    			}
+                    			ContinuedMap.put(args[2],temp4);
+                    			return true;
+                			}
+                			case "ec":
+                			{
+                				ContinuedMap.remove(args[2]);
+                				return true;
+                			}
+                			default:
+                				CSBZ(sender);
+                				return true;
+                			}
+
                 		}
+                		else
+                		{
+                    		for(int i=0;i<MobNum;i++)
+                    		{
+                    			SpanMob(MobName);
+                    		}
+                		}
+
                 	}
                     
                 	return true;
@@ -156,6 +189,32 @@ public class smyhw extends JavaPlugin implements Listener
 		int x = (int) EnablePoint.get(temp2).getX();
 		int y = (int) EnablePoint.get(temp2).getY();
 		int z = (int) EnablePoint.get(temp2).getZ();
+		cmd = cmd.replaceAll("%x%", x+"");
+		cmd = cmd.replaceAll("%y%", y+"");
+		cmd = cmd.replaceAll("%z%", z+"");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),cmd);
+	}
+	
+}
+
+
+class Continued extends BukkitRunnable
+{
+	String cmd;
+	public Continued(int tick,String type)
+	{
+		cmd = smyhw.configer.getString("MOBs."+type);
+		this.runTaskTimer(smyhw.smyhw_,0,tick);
+	}
+
+	@Override
+	public void run() 
+	{
+		Random temp1 = new Random();
+		int temp2 = temp1.nextInt(smyhw.EnablePoint.size());
+		int x = (int) smyhw.EnablePoint.get(temp2).getX();
+		int y = (int) smyhw.EnablePoint.get(temp2).getY();
+		int z = (int) smyhw.EnablePoint.get(temp2).getZ();
 		cmd = cmd.replaceAll("%x%", x+"");
 		cmd = cmd.replaceAll("%y%", y+"");
 		cmd = cmd.replaceAll("%z%", z+"");

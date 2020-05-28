@@ -113,9 +113,9 @@ public class smyhw extends JavaPlugin implements Listener
                 		{sender.sendMessage(smyhw.prefix+"语句<"+temp2+">没有检测到分隔符<*>");return true;}
                 		String MobName = temp3[0];
                 		int  MobNum = Integer.parseInt( temp3[1] );
-                		if(args.length >2 && args[3].equals("sc"))
+                		if(args.length >2)
                 		{
-                			switch(args[3])
+                			switch(args[2])
                 			{
                 			case "sc":
                 			{

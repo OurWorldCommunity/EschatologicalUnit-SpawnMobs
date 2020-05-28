@@ -89,9 +89,12 @@ public class smyhw extends JavaPlugin implements Listener
                 	String PointName = args[2];
                 	Location zb = ((Player)sender).getLocation();
                 	sender.sendMessage(prefix+"刷怪组<"+GroupName+">刷怪点<"+PointName+">已经设定为<x="+(int)zb.getX()+";y="+(int)zb.getY()+";z="+(int)zb.getZ()+">");
-                	configer.set("SpawnPoint."+GroupName+"."+PointName+".x", (int)zb.getX());
-                	configer.set("SpawnPoint."+GroupName+"."+PointName+".y", (int)zb.getX());
-                	configer.set("SpawnPoint."+GroupName+"."+PointName+".z", (int)zb.getX());
+                	configer.set("SpawnPoint."+"."+PointName+".x", (int)zb.getX());
+                	configer.set("SpawnPoint."+"."+PointName+".y", (int)zb.getX());
+                	configer.set("SpawnPoint."+"."+PointName+".z", (int)zb.getX());
+                	List temp = configer.getStringList("SpawnGroup."+"."+GroupName);
+                	temp.add(PointName);
+                	configer.set("SpawnGroup."+"."+GroupName, temp);
                 	saveConfig();
                 	return true;
                 }

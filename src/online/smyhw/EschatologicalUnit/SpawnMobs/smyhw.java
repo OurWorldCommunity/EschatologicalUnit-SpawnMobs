@@ -32,7 +32,7 @@ public class smyhw extends JavaPlugin implements Listener
 	public static FileConfiguration configer;
 	public static String prefix;
 	public static List<Location> EnablePoint;
-	public static Hashtable ContinuedMap = new Hashtable();
+	public static Hashtable<String,Continued> ContinuedMap = new Hashtable<String,Continued>();
 	@Override
     public void onEnable() 
 	{
@@ -130,6 +130,7 @@ public class smyhw extends JavaPlugin implements Listener
                 			}
                 			case "ec":
                 			{
+                				ContinuedMap.get(args[2]+"_"+MobName).cancel();
                 				ContinuedMap.remove(args[2]+"_"+MobName);
                 				return true;
                 			}

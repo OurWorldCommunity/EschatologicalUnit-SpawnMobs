@@ -1,5 +1,6 @@
 package online.smyhw.EschatologicalUnit.SpawnMobs;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -83,26 +85,26 @@ public class smyhw extends JavaPlugin implements Listener
                 	return true;
                 }
                 case"set":
-                {
+                {//设定刷怪点
                 	if(args.length<3) {CSBZ(sender);return true;}
                 	String GroupName = args[1];
                 	String PointName = args[2];
                 	Location zb = ((Player)sender).getLocation();
                 	sender.sendMessage(prefix+"刷怪组<"+GroupName+">刷怪点<"+PointName+">已经设定为<x="+(int)zb.getX()+";y="+(int)zb.getY()+";z="+(int)zb.getZ()+">");
-                	configer.set("SpawnPoint."+"."+PointName+".x", (int)zb.getX());
-                	configer.set("SpawnPoint."+"."+PointName+".y", (int)zb.getY());
-                	configer.set("SpawnPoint."+"."+PointName+".z", (int)zb.getZ());
-                	List temp = configer.getStringList("SpawnGroup."+"."+GroupName);
-                	temp.add(PointName);
-                	configer.set("SpawnGroup."+"."+GroupName, temp);
+                	configer.set("SpawnPoint."+"."+GroupName+"."+PointName+".x", (int)zb.getX());
+                	configer.set("SpawnPoint."+"."+GroupName+"."+PointName+".y", (int)zb.getY());
+                	configer.set("SpawnPoint."+"."+GroupName+"."+PointName+".z", (int)zb.getZ());
                 	saveConfig();
                 	return true;
                 }
                 case "do":
-                {
+                {//开启一波刷怪
                 	if(args.length<2) {CSBZ(sender);return true;}
+                	//获得需要开启的刷怪波数
                 	int Wave =Integer.parseInt( args[1]);
+                	//获取该波数的刷怪列表
                 	List<String> MobTypeTexts = configer.getStringList("Wave."+Wave);
+                	//遍历该刷怪列表
                 	Iterator<String> temp1 = MobTypeTexts.iterator();
                 	while(temp1.hasNext())
                 	{
@@ -111,8 +113,11 @@ public class smyhw extends JavaPlugin implements Listener
                 		String[] temp3 = temp2.split("\\*");
                 		if(temp3.length!=2) 
                 		{sender.sendMessage(smyhw.prefix+"语句<"+temp2+">没有检测到分隔符<*>");return true;}
+                		//获取怪物名称
                 		String MobName = temp3[0];
+                		//获取怪物数量
                 		int  MobNum = Integer.parseInt( temp3[1] );
+                		//判断是否是持续性刷怪
                 		if(args.length >2)
                 		{
                 			switch(args[2])
@@ -141,10 +146,10 @@ public class smyhw extends JavaPlugin implements Listener
                 				CSBZ(sender);
                 				return true;
                 			}
-
                 		}
+                		//end 持续性刷怪
                 		else
-                		{
+                		{//开启一般刷怪
                     		for(int i=0;i<MobNum;i++)
                     		{
                     			SpanMob(MobName);
@@ -155,27 +160,44 @@ public class smyhw extends JavaPlugin implements Listener
                     
                 	return true;
                 }
+                
+                //激活刷怪组
                 case "ACT":
                 {
                 	if(args.length<2) {CSBZ(sender);return true;}
                 	String GroupName  = args[1];
-                	List Points = configer.getList("SpawnGroup."+GroupName);
-                	if(Points==null)
+                	//获取指定刷怪组的刷怪点列表
+                	ConfigurationSection temp1 = configer.getConfigurationSection("SpawnPoint."+GroupName);
+                	if(temp1==null)
                 	{sender.sendMessage(smyhw.prefix+"对应的刷怪组不存在！");return true;}
+                	Set<String> Points = temp1.getKeys(false);
+                	//遍历目标刷怪组中的刷怪点
                     Iterator<String> it = Points.iterator();
                     while (it.hasNext()) 
                     {
+                    	//遍历的是刷怪点的名称
                         String PointName = (String) it.next();
-                        int x = configer.getInt("SpawnPoint."+PointName+".x");
-                        int y = configer.getInt("SpawnPoint."+PointName+".y");
-                        int z = configer.getInt("SpawnPoint."+PointName+".z");
+                        //获得刷怪点的坐标
+                        int x = configer.getInt("SpawnPoint."+GroupName+"."+PointName+".x");
+                        int y = configer.getInt("SpawnPoint."+GroupName+"."+PointName+".y");
+                        int z = configer.getInt("SpawnPoint."+GroupName+"."+PointName+".z");
+                        //根据坐标构造Location实例
                         Location zb = new Location(Bukkit.getWorld("world"),x,y,z);
+                        //将构造好的实例加入激活的刷怪点列表
                         EnablePoint.add(zb);
                     }
                     sender.sendMessage(smyhw.prefix+"刷怪组<"+args[1]+">已激活");
                 	return true;
                 }
-                
+                case "reset":
+                {//重置所有刷怪点
+                	EnablePoint = new ArrayList<Location>();
+                	ContinuedMap = new Hashtable<String,Continued>();
+                	 sender.sendMessage(smyhw.prefix+"刷怪点已重置");
+                	 return true; 
+                }
+                default:
+                	 sender.sendMessage(smyhw.prefix+"未知指令");
                 }
                 return true;                                                       
         }
